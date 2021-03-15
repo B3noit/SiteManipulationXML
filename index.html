@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Test http request</title>
+    <style>
+﻿       .subDivContainer{
+        display:inline-block;
+        }
+
+        .celle{
+        text-align:center;
+        width:20vw;
+        margin-top:0;
+        margin-bottom:0;
+        border:solid 1px black;
+        }       
+    </style>
+
+</head>
+<body>
+    <!-- Conteneur pour afficher les éléments du xml -->
+    <div id="MonTest">
+        <TEXTAREA id="areafilms" rows="20" cols="50"></TEXTAREA>
+        <div id="titleList">
+
+        </div>
+    </div>
+    <div id="displayXmlHttp">
+
+    </div>
+    
+    <!-- Boutton permettant de lancer la focntion d'affichage des éléments du XML -->
+    <button id="btnCreerTableauFilm" onclick="displayXml()">Cliquez ici !</button>
+
+    <script type="text/javascript">
+        //Création d'un objet XMLHttpRequest
+        var xhttp = new XMLHttpRequest;
+
+        xhttp.onreadystatechange = function () {
+            if (xhttp.readyState == 4 && xhttp.status == 200) {
+                document.getElementById("areafilms").innerHTML = xhttp.responseText;
+                var xmlDoc = xhttp.responseXML;
+                //Récupère tous les éléments films du XML
+                var allFilm = xmlDoc.getElementsByTagName("film");
+                //On compte le nombre de films pour notre prochaine boucle for
+                var nbFilm = allFilm.length;
+                //On créer un container qui servira de tableau
+                var table = document.createElement("div");
+                //On créer trois collone pour notre tableau
+                var col1 = document.createElement("div");
+                var col2 = document.createElement("div");
+                var col3 = document.createElement("div");
+                var titleLine;
+
+                col1.setAttribute("class", "subDivContainer");
+                col2.setAttribute("class", "subDivContainer");
+                col3.setAttribute("class", "subDivContainer");
+
+                var rowCol1 = document.createElement('p');
+                rowCol1.setAttribute("class", "celle");
+                var rowCol2 = document.createElement('p');
+                rowCol2.setAttribute("class", "celle");
+                var rowCol3 = document.createElement('p');
+                rowCol3.setAttribute("class", "celle");
+
+                rowCol1.innerHTML = "Film";
+                rowCol2.innerHTML = "Réal";
+                rowCol3.innerHTML = "Date";
+
+                col1.appendChild(rowCol1);
+                col2.appendChild(rowCol2);
+                col3.appendChild(rowCol3);
+
+                for (var i = 0; i < nbFilm; i++) {
+                    rowCol1 = document.createElement('p');
+                    rowCol1.setAttribute("class", "celle");
+                    rowCol2 = document.createElement('p');
+                    rowCol2.setAttribute("class", "celle");
+                    rowCol3 = document.createElement('p');
+                    rowCol3.setAttribute("class", "celle");
+                    rowCol1.innerHTML = allFilm[i].childNodes[1].textContent;
+                    rowCol2.innerHTML = allFilm[i].childNodes[3].textContent;
+                    rowCol3.innerHTML = allFilm[i].childNodes[5].textContent;
+                    col1.appendChild(rowCol1);
+                    col2.appendChild(rowCol2);
+                    col3.appendChild(rowCol3);
+                    titleRow = document.createElement('p');
+                    titleRow.innerHTML = allFilm[i].childNodes[1].textContent;
+                    document.getElementById("titleList").appendChild(titleRow);
+                }
+
+                table.appendChild(col1);
+                table.appendChild(col2);
+                table.appendChild(col3);
+
+                document.getElementById("displayXmlHttp").appendChild(table);
+            }
+        }
+
+        function displayXml() {
+            xhttp.open("GET", "MesFilms.xml", true);
+            xhttp.send();
+        }
+        
+    </script>
+
+</body>
+</html>
