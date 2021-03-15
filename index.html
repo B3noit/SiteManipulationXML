@@ -2,9 +2,10 @@
 <html>
 <head>
     <meta charset="utf-8" />
+    <link rel="icon" href="logo.jpg" />
     <title>Test http request</title>
     <style>
-﻿       .subDivContainer{
+﻿       /*.subDivContainer{
         display:inline-block;
         }
 
@@ -14,96 +15,72 @@
         margin-top:0;
         margin-bottom:0;
         border:solid 1px black;
-        }       
+        } */      
     </style>
 
 </head>
 <body>
-    <!-- Conteneur pour afficher les éléments du xml -->
-    <div id="MonTest">
-        <TEXTAREA id="areafilms" rows="20" cols="50"></TEXTAREA>
-        <div id="titleList">
+<h1>Bienvenue sur cette page répertoriant quelque manipulation de document XML.</h1>
+<!-- Bouton qui lance la méthode de chargement du xml -->
+<button onclick="displayXML();">Cliquez ici !</button>
 
-        </div>
-    </div>
-    <div id="displayXmlHttp">
+<!-- Tableau recevant les valeurs -->
+<div id="table">
 
-    </div>
-    
-    <!-- Boutton permettant de lancer la focntion d'affichage des éléments du XML -->
-    <button id="btnCreerTableauFilm" onclick="displayXml()">Cliquez ici !</button>
+    <textarea id="area_films"  rows="20" cols="50">Ici sera insérer le document Xml</textarea>
+    <textarea id="area_titres"  rows="20" cols="50">Ici sera insérer les titres des films</textarea>
+    <textarea id="area_infos"  rows="20" cols="80">Ici sera insérer le titre du film, son réalisateur et sa date de sortie.</textarea>
 
-    <script type="text/javascript">
-        //Création d'un objet XMLHttpRequest
-        var xhttp = new XMLHttpRequest;
+</div>
 
-        xhttp.onreadystatechange = function () {
-            if (xhttp.readyState == 4 && xhttp.status == 200) {
-                document.getElementById("areafilms").innerHTML = xhttp.responseText;
-                var xmlDoc = xhttp.responseXML;
+<script type="text/javascript">
+
+    function displayXML()
+    {
+        //Création de l'objet
+        var xhttp = new XMLHttpRequest();
+
+        xhttp.onreadystatechange = function() 
+        {
+            if (xhttp.readyState == 4 && xhttp.status == 200)//Quand la requête est terminée
+            {
+                //Récupère le contenu du .xml
+                var parser = new DOMParser();
+                XMLDoc = parser.parseFromString(xhttp.responseText, "text/html");
+
+                //Récupère les éléments du .xml
+                document.getElementById("area_films").innerHTML = xhttp.responseText;
                 //Récupère tous les éléments films du XML
-                var allFilm = xmlDoc.getElementsByTagName("film");
-                //On compte le nombre de films pour notre prochaine boucle for
-                var nbFilm = allFilm.length;
-                //On créer un container qui servira de tableau
-                var table = document.createElement("div");
-                //On créer trois collone pour notre tableau
-                var col1 = document.createElement("div");
-                var col2 = document.createElement("div");
-                var col3 = document.createElement("div");
-                var titleLine;
+                var allFilms = XMLDoc.getElementsByTagName("titre");
+                //Récupère le nombre de filme pour notre prochaine boucle for
+                var nbFilms = allFilms.length;
+                var titres = "";
+                var infos = "";
+                var reals = XMLDoc.getElementsByTagName("realisateur");
+                var dates = XMLDoc.getElementsByTagName("date");
+                
+                //Boucle dans ce fichier pour récupérer les informations nécéssaires
+                for (let index = 0; index < nbFilms; index++) 
+                {
+                    const element = allFilms[index];
+                    const element2 = reals[index];
+                    const element3 = dates[index];
 
-                col1.setAttribute("class", "subDivContainer");
-                col2.setAttribute("class", "subDivContainer");
-                col3.setAttribute("class", "subDivContainer");
-
-                var rowCol1 = document.createElement('p');
-                rowCol1.setAttribute("class", "celle");
-                var rowCol2 = document.createElement('p');
-                rowCol2.setAttribute("class", "celle");
-                var rowCol3 = document.createElement('p');
-                rowCol3.setAttribute("class", "celle");
-
-                rowCol1.innerHTML = "Film";
-                rowCol2.innerHTML = "Réal";
-                rowCol3.innerHTML = "Date";
-
-                col1.appendChild(rowCol1);
-                col2.appendChild(rowCol2);
-                col3.appendChild(rowCol3);
-
-                for (var i = 0; i < nbFilm; i++) {
-                    rowCol1 = document.createElement('p');
-                    rowCol1.setAttribute("class", "celle");
-                    rowCol2 = document.createElement('p');
-                    rowCol2.setAttribute("class", "celle");
-                    rowCol3 = document.createElement('p');
-                    rowCol3.setAttribute("class", "celle");
-                    rowCol1.innerHTML = allFilm[i].childNodes[1].textContent;
-                    rowCol2.innerHTML = allFilm[i].childNodes[3].textContent;
-                    rowCol3.innerHTML = allFilm[i].childNodes[5].textContent;
-                    col1.appendChild(rowCol1);
-                    col2.appendChild(rowCol2);
-                    col3.appendChild(rowCol3);
-                    titleRow = document.createElement('p');
-                    titleRow.innerHTML = allFilm[i].childNodes[1].textContent;
-                    document.getElementById("titleList").appendChild(titleRow);
+                    titres = titres + element.innerHTML + "\n";
+                    infos = infos + "Film : " + element.innerHTML + " / Réalisateur : " + element2.innerHTML + " / Date : " + element3.innerHTML + "\n";
                 }
 
-                table.appendChild(col1);
-                table.appendChild(col2);
-                table.appendChild(col3);
-
-                document.getElementById("displayXmlHttp").appendChild(table);
-            }
+            document.getElementById("area_titres").innerHTML = titres;
+            document.getElementById("area_infos").innerHTML = infos;
         }
+    };
 
-        function displayXml() {
-            xhttp.open("GET", "MesFilms.xml", true);
-            xhttp.send();
-        }
-        
-    </script>
-
+    xhttp.open("GET", "MesFilms.xml", true);
+    xhttp.send();
+}
+</script>
 </body>
+<foot>
+    
+</foot>
 </html>
