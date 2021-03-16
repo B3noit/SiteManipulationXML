@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="icon" href="logo.jpg" />
+        <title>Manipulation DOM</title>
+        <style>
+        #container {
+        width: 400px;
+        height: 400px;
+        position: relative;
+        background: yellow;
+        }
+        #animate {
+        width: 50px;
+        height: 50px;
+        position: absolute;
+        background: red;
+        }
+            .grossir1 {
+                border : 5px solid black; 
+            }
+
+            .grossir2 {
+                border : 10px dotted black; 
+            }
+        </style>
+    </head>
+    <body>
+        <div style="border: 2px solid black;" id="div">
+            <p id="paragraphe" style="color: red;" class="test">
+                Bonjour, je suis un paragraphe contenu dans un cadre. 
+            </p>
+        </div>
+
+        <button id="btn1" onclick="bordure('btn1')" class="grossir1">Grossir bordure</button>
+
+
+        <div id="div2">
+
+        </div>
+
+
+<h2>Animation</h2>
+        <div id="container">
+            <div id ="animate">
+                
+            </div>           
+        </div>
+        <button onclick="myMove()">Animer</button><!--Bouton qui appele myMove pour lancer l'anim-->
+        <p id="animation"><p>
+        <p id="secs"><p>
+
+
+<h2 id="EventDomClick" onclick="test_changement(this),test_alerte(),test_alerte2()">Evènement DOM, cliquez!</h2>
+
+<h2 id="EventDomListenet"></h2>
+
+<p id="ParaDomListen">Survolez ce paragraphe pour voir l'effet du add event listener</p>
+
+<h2>DivQuizz</h2>
+
+<div id="DivQuizzDiv" style="border: 2px solid black;">
+    <p id="DivQuizzP">Premier paragraphe.</p>
+    <p id="DivQuizzP">Second paragraphe.</p>
+</div>
+<button onclick="divQuizzReplace()">Remplacer le troisème paragraphe par le quatrième..</button>
+
+
+
+
+        <script type="text/javascript">
+        var contour = document.getElementById("div");
+        console.log(contour);
+        var paragraphe = document.getElementsByTagName("p");
+        console.log(paragraphe);
+
+        var parbis = document.querySelectorAll('#div > p');
+        console.log(parbis);
+
+        var x = document.querySelectorAll('p.test');
+        
+        console.log(document.querySelector('p.test'));
+
+        function bordure(identifiant)//Fonction permettant de modifier l'épaisseur des bordures
+        {
+            var btn = document.getElementById(identifiant);
+            if(btn.getAttribute("class") == "grossir1")
+            {
+                btn.setAttribute("class", "grossir2");
+            }
+            else
+            {
+                btn.setAttribute("class", "grossir1");
+            }
+        }
+
+
+
+        var pos = 0; //Variable déclarer à l'exterieur pour qu'elle soit globale et que sa porté atteigne deplacement
+        var id;      //sans que deplacement doit être déclarer dans myMovr
+        var Chrono = 0; //Variable pour chronomètre
+        var etape = 0
+        var countDownDate = new Date().getTime();//Déclaration de la variable qui va définir le temps au début de l'animation.
+
+
+        function deplacement() {
+            var now = new Date().getTime();// On récupère la date de l'instant T à chaque intervalle
+            var timeleft = now - countDownDate;//On soustrait la date  de l'instant T à la date du début de l'animation
+            var seconds = Math.floor((timeleft % (1000 * 60)) / 1000);//On formate la variable seconds pour que cela s'affiche proprement
+            document.getElementById("secs").innerHTML = seconds + "s "//On affiche le timer dans un paragraphe en dessous.
+            Chrono = Chrono + 0.01;
+            if (pos == 0 && etape == 4){//Le deplacement s'effectue en 4 étape, dont chacune possède un déplacement bien définit
+                clearInterval(id);
+                document.getElementById('animation').innerHTML += "<BR/>L'animation à duré "+ Chrono+" secondes.";
+                etape = 0;
+            } else if (etape==0){//Première étape de haut en bas et de gauche à droite
+                pos++;
+                animate.style.top = pos + 'px';
+                animate.style.left = pos + 'px';
+                if (pos == 350){
+                    etape = 1
+                }
+            } else if (etape==1){//Deuxième étape de droite à gauche
+                pos--;
+                animate.style.left = pos + 'px';
+                if (pos == 0){
+                    etape = 2
+                }
+            } else if (etape==2){//Troisième étape de bas en haut et de gauche à droite
+                pos++;
+                animate.style.top = 350 - pos + 'px';
+                animate.style.left = pos + 'px';
+                if (pos == 350){
+                    etape = 3
+                }
+            }
+             else if (etape==3){//Quatrième étape de droite à gauche à nouveau
+                pos--;
+                animate.style.left = pos + 'px';
+                if (pos == 0){
+                    etape = 4
+                }
+            }
+        }
+
+        function myMove(){
+            var animate = document.getElementById("animate"); //On récupère l'élément à animer qui contient l'attribut animate
+            Chrono = 0;
+            var countDownDate = new Date().getTime();//Définition la date du lancement de l'animation
+            id = setInterval(deplacement,10);//Durée de l'intervalle à laquel on appele la fonction voulu dans ce cas, déplacement.
+
+        }
+
+        function test_changement(id) {//On utilise une fonciton pour changer le texte avec l'élément courant this
+        id.innerHTML = "Texte chargé par événement onClick avec this!";
+        }
+
+        function test_alerte(){//On ajoute du text sans this
+            document.getElementById('EventDomClick').innerHTML += "<BR/>Ajout de texte par événement onClick sans this!";
+        }
+
+        function displayDate(){//On rajoute la date sous l'élément qui est cliqué et qui appelle test_alerte2
+            document.getElementById('EventDomClick').innerHTML += "<BR/>" + Date();
+        }
+
+        function test_alerte2(){//on affiche la date
+            document.getElementById("EventDomClick").onclick = displayDate;
+        }
+
+        var paragrapheListen = document.getElementById("ParaDomListen");//on ajoute un evènement listener sur les <p> d'id = "ParaDomListen"
+        paragrapheListen.addEventListener("mouseover", HoverEffect);//quand la souris passe sur le paragraphe, on appelle HoverEffect,
+
+        function HoverEffect(){
+            paragrapheListen.style.color = "red";//applique la couleur "red" au style du paragraphe
+        }
+
+        var html2 = document.firstChild.nodeName;//firstChild permet d'accéder au première enfant de l'élément sélectionner, 
+        console.log(html2);                     //nodeName permet d'obtenir le nom du noeud ciblé 
+
+        var entete = document.getElementsByTagName("head")[0].firstChild.nodeName;
+        console.log(entete);
+
+        var titre = document.getElementsByTagName("html")[0].firstChild.childNodes[0].nodeType;//nodeType permet d'obtenir le type du noeud ciblé 
+        console.log(titre);
+
+        var objTitle = document.getElementsByTagName('head')[0].firstChild.nextSibling; //Permet d'obtenir l'enfant suivant, à partir duquel on se situe
+        console.log(objTitle); 
+
+        var titreValue = objTitle.innerHTML; //Texte contenu dans le titre
+        console.log(titreValue);
+
+        var titreValue = objTitle.childNodes[0].nodeValue; //Texte contenu dans le titre
+        console.log('texte du title : ', titreValue);
+
+        var childP = document.createElement("p");
+        var DivQuizz = document.getElementById("DivQuizzDiv").appendChild(childP);
+        document.getElementById("DivQuizzDiv").lastChild.innerHTML += "Ajout d'un troisième paragraphe en js!";
+        document.getElementById("DivQuizzDiv").lastChild.setAttribute(id,"DivQuizzP");
+
+        function divQuizzReplace(){
+            var childP = document.createElement("p");
+            childP.innerHTML = "Quatrième paragraphe !";
+            childP.setAttribute(id,"DivQuizzP");
+            DivQuizzDiv = document. getElementById("DivQuizzDiv").lastChild;
+            document.getElementById("DivQuizzDiv").replaceChild(childP,DivQuizzDiv);
+        }
+
+        </script>
+    </body>
+</html> 

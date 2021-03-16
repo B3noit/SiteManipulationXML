@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <link rel="icon" href="logo.jpg" />
+    <title>Test http request</title>
+   
+</head>
+<body>
+<a href="index.html">Retour à la page principale</a>
+<h1>Démonstration d'utilisation des xpath.</h1>
+<!-- Bouton qui lance la méthode de chargement du xml -->
+<button onclick="displayXML();">Cliquez ici !</button>
+<!-- Tableau recevant les valeurs -->
+<div>
+    <textarea id="xPathFilms"  rows="20" cols="50">Ici sera insérer les titres de films du document Xml à l'aide d'un xPath.</textarea>
+    <textarea id="xPathFilms1970" rows="20" cols="50">Ici sera insérer les titres de films sortie après 1970.</textarea>
+</div>
+
+<div>
+    <p>Choissisez un id de réalisateur pour afficher ces réalisations.</p>
+    <br/>
+    <select name="select_idReal" id="id_selection_idReal" onchange="OnSelectDisplay(this)">
+        <option id="option1">Choisissez un id de réalisateur</option>
+    </select>
+    <div id="displayRealFilm">
+        <p>Ici sera affiché la liste des films du réalisateur sélectionner.</p>
+    </div>
+</div>
+
+<script type="text/javascript">
+
+    //Création de l'objet
+function displayXML()
+    {
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200){//Quand la requête est terminée{
+            showResult(xhttp.responseXML);
+        }
+    }
+    xhttp.open("GET", "MesFilms.xml", true);
+    xhttp.send();
+    
+    function showResult(xml){
+
+        var txt ="";
+        //Tous les noeuds titres
+        path = "/lesfilms/film/titre";
+
+        if (xml.evaluate){
+            var nodes = xml.evaluate(path, xml, null, XPathResult.ANY_TYPE, null);
+            var result = nodes.iterateNext();
+            while (result){
+                //Nous voulons afficher le titre 1 nous allons afficher le noeud du dernier titre pour ces deux elements il y a aussi possibilite d'avoir la valeur du noeud
+                txt += result.childNodes[0].nodeValue + "\n";
+                result = nodes.iterateNext();
+            }
+        }
+        document.getElementById("xPathFilms").innerHTML = txt;
+        //On veut récupérer les films dont la date est supérieur à 1900 les conditions s'exprime ex: /lesfilms/film[date > 1900]/titre
+        txt = "";
+        path = "/lesfilms/film[date > 1970]/titre";
+        nodes = xml.evaluate(path, xml, null, XPathResult.ANY_TYPE, null);
+        result = nodes.iterateNext();
+        while (result){
+            txt += result.childNodes[0].nodeValue + "\n";
+            result = nodes.iterateNext();
+        }
+        document.getElementById("xPathFilms1970").innerHTML = txt;
+    }        
+}
+
+    function OnSelectDisplay(selectObject) 
+    {
+        //On récupère le container qui va accueillir les donnée à afficher selon le réal selctionner.
+        var container = document.getElementById('displayRealFilm');
+        var realSelected = selectObject.value;
+        var txt ="";
+        container.innerHTML = "<p><strong><em>Voci la liste des films du réalisateur sélectionner :</em></strong></p>"
+
+        path = "/lesfilms/film[realisateur == " + realSelected + "]/titre";
+        while (result){
+            txt = result.childNodes[0].nodeValue + "\n";
+            result = nodes.iterateNext();
+            container.innerHTML = container.innerHTML + txt + "<br/>"
+        }
+    }
+
+</script>
+</body>
+<foot>
+    <p><em>Benoît Lamarre</em></p>
+</foot>
+</html>

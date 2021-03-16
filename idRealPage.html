@@ -5,8 +5,11 @@
     <link rel="icon" href="logo.jpg" />
     <title>Test http request</title>
     <style>
-﻿       .dsiplayRealFilm{
+﻿        #mainDiv{
+        width: 400px;
+        height: 400px;
         border:solid 1px black
+        background: yellow;
         }
 
         /*.celle{
@@ -19,17 +22,17 @@
     </style>
 
 </head>
-<body onload=" Init();">
+<body onload=" Init()">
     <a href="index.html">Retour à la page principale</a>
     <h1>Exemple de manipulation de donnée d'un XML</h1>
     <!-- Créer une liste de sélection des idReal. Quand selectionné, afficher en dessous l'ensemble des films du réalisateur, avec du css -->
-    <div>
+    <div id="mainDiv">
         <p>Choissisez un id de réalisateur pour afficher ces réalisations.</p>
         <br/>
         <select name="select_idReal" id="id_selection_idReal" onchange="OnSelectDisplay(this)">
             <option id="option1">Choisissez un id de réalisateur</option>
         </select>
-        <div id="dsiplayRealFilm" class="dsiplayRealFilm">
+        <div id="displayRealFilm">
             <p>Ici sera affiché la liste des films du réalisateur sélectionner.</p>
         </div>
     </div>
@@ -77,7 +80,7 @@
     function OnSelectDisplay(selectObject) 
     {
         //On récupère le container qui va accueillir les donnée à afficher selon le réal selctionner.
-        var container = document.getElementById('dsiplayRealFilm');
+        var container = document.getElementById('displayRealFilm');
         var realSelected = selectObject.value;
         container.innerHTML = "<p><strong><em>Voci la liste des films du réalisateur sélectionner :</em></strong></p>"
         //console.log(realSelected);
