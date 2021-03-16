@@ -5,11 +5,11 @@
     <link rel="icon" href="logo.jpg" />
     <title>Test http request</title>
     <style>
-﻿       /*.subDivContainer{
-        display:inline-block;
+﻿       .dsiplayRealFilm{
+        border:solid 1px black
         }
 
-        .celle{
+        /*.celle{
         text-align:center;
         width:20vw;
         margin-top:0;
@@ -29,7 +29,8 @@
         <select name="select_idReal" id="id_selection_idReal" onchange="OnSelectDisplay(this)">
             <option id="option1">Choisissez un id de réalisateur</option>
         </select>
-        <div id="dsiplayRealFilm">
+        <div id="dsiplayRealFilm" class="dsiplayRealFilm">
+            <p>Ici sera affiché la liste des films du réalisateur sélectionner.</p>
         </div>
     </div>
 
@@ -78,13 +79,14 @@
         //On récupère le container qui va accueillir les donnée à afficher selon le réal selctionner.
         var container = document.getElementById('dsiplayRealFilm');
         var realSelected = selectObject.value;
+        container.innerHTML = "<p><strong><em>Voci la liste des films du réalisateur sélectionner :</em></strong></p>"
         //console.log(realSelected);
         //console.log(allFilm);
         for(i = 0; i < nbFilm; i++)
         {
             var strCompar = allFilm[i].getAttribute('idreal');
             if (realSelected == strCompar){
-            container.innerHTML = (allFilm[i].getElementsByTagName('titre')[0].innerHTML);
+            container.innerHTML = container.innerHTML + (allFilm[i].getElementsByTagName('titre')[0].innerHTML) + "<br/>";
             }
         }
     }
