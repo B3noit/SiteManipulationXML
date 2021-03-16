@@ -20,10 +20,7 @@
 
 </head>
 <body>
-<<<<<<< Updated upstream
-=======
-<a href="idRealPage.html">Sélection de réalisteur</a>
->>>>>>> Stashed changes
+<a href="idRealPage.html">Sélection de réalisateur</a>
 <h1>Bienvenue sur cette page répertoriant quelque manipulation de document XML.</h1>
 <!-- Bouton qui lance la méthode de chargement du xml -->
 <button onclick="displayXML();">Cliquez ici !</button>
@@ -34,6 +31,7 @@
     <textarea id="area_films"  rows="20" cols="50">Ici sera insérer le document Xml</textarea>
     <textarea id="area_titres"  rows="20" cols="50">Ici sera insérer les titres des films</textarea>
     <textarea id="area_infos"  rows="20" cols="80">Ici sera insérer le titre du film, son réalisateur et sa date de sortie.</textarea>
+    <textarea id="area_infos_str"  rows="20" cols="80">Ici sera insérer le titre du film, son réalisateur et sa date de sortie mais grâce à la méthode split appliqué sur le xml ne string.</textarea>
 
 </div>
 
@@ -51,6 +49,23 @@
                 //Récupère le contenu du .xml
                 var parser = new DOMParser();
                 XMLDoc = parser.parseFromString(xhttp.responseText, "text/html");
+
+                var infoStr = "";
+                var strXML = xhttp.responseText;
+                console.table(strXML.split("<titre>"));
+                for (let index = 1; index < strXML.split("<titre>").length; index++) 
+                {
+                    var strTitre = strXML.split("<titre>")[index];
+                    strTitre = strTitre.split("</titre>")[0];
+                    var strReal = strXML.split("<realisateur>")[index];
+                    strReal = strReal.split("</realisateur>")[0];
+                    var strDate = strXML.split("<date>")[index];
+                    strDate = strDate.split("</date>")[0];
+                    
+                    infoStr = infoStr + "Film : " + strTitre + " / Réalisateur : " + strReal + " / Date : " + strDate + "\n";
+                }
+
+
 
                 //Récupère les éléments du .xml
                 document.getElementById("area_films").innerHTML = xhttp.responseText;
@@ -76,6 +91,7 @@
 
             document.getElementById("area_titres").innerHTML = titres;
             document.getElementById("area_infos").innerHTML = infos;
+            document.getElementById("area_infos_str").innerHTML = infoStr;
         }
     };
 
@@ -85,6 +101,6 @@
 </script>
 </body>
 <foot>
-    
+    <p><em>Benoît Lamarre</em></p>
 </foot>
 </html>
