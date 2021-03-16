@@ -6,7 +6,8 @@
     <title>Test http request</title>
    
 </head>
-<body>
+
+<body onload="init()">
 <a href="index.html">Retour à la page principale</a>
 <h1>Démonstration d'utilisation des xpath.</h1>
 <!-- Bouton qui lance la méthode de chargement du xml -->
@@ -30,62 +31,70 @@
 
 <script type="text/javascript">
 
-    //Création de l'objet
-function displayXML()
+//Création de l'objet
+var xhttp = new XMLHttpRequest();
+var XMLDoc;
+
+function init()
     {
-    var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200){//Quand la requête est terminée{
-            showResult(xhttp.responseXML);
+            console.log("Requête réussit");
+            XMLDoc = xhttp.responseXML;
         }
     }
     xhttp.open("GET", "MesFilms.xml", true);
     xhttp.send();
-    
-    function showResult(xml){
+    }
 
-        var txt ="";
-        //Tous les noeuds titres
-        path = "/lesfilms/film/titre";
+function displayXML(){
+    showResult(XMLDoc);
+}
 
-        if (xml.evaluate){
-            var nodes = xml.evaluate(path, xml, null, XPathResult.ANY_TYPE, null);
-            var result = nodes.iterateNext();
-            while (result){
-                //Nous voulons afficher le titre 1 nous allons afficher le noeud du dernier titre pour ces deux elements il y a aussi possibilite d'avoir la valeur du noeud
-                txt += result.childNodes[0].nodeValue + "\n";
-                result = nodes.iterateNext();
-            }
-        }
-        document.getElementById("xPathFilms").innerHTML = txt;
-        //On veut récupérer les films dont la date est supérieur à 1900 les conditions s'exprime ex: /lesfilms/film[date > 1900]/titre
-        txt = "";
-        path = "/lesfilms/film[date > 1970]/titre";
-        nodes = xml.evaluate(path, xml, null, XPathResult.ANY_TYPE, null);
-        result = nodes.iterateNext();
+
+function showResult(xml){
+
+    var txt ="";
+    //Tous les noeuds titres
+    path = "/lesfilms/film/titre";
+
+    if (xml.evaluate){
+        var nodes = xml.evaluate(path, xml, null, XPathResult.ANY_TYPE, null);
+        var result = nodes.iterateNext();
         while (result){
+            //Nous voulons afficher le titre 1 nous allons afficher le noeud du dernier titre pour ces deux elements il y a aussi possibilite d'avoir la valeur du noeud
             txt += result.childNodes[0].nodeValue + "\n";
             result = nodes.iterateNext();
         }
-        document.getElementById("xPathFilms1970").innerHTML = txt;
-    }        
-}
-
-    function OnSelectDisplay(selectObject) 
-    {
-        //On récupère le container qui va accueillir les donnée à afficher selon le réal selctionner.
-        var container = document.getElementById('displayRealFilm');
-        var realSelected = selectObject.value;
-        var txt ="";
-        container.innerHTML = "<p><strong><em>Voci la liste des films du réalisateur sélectionner :</em></strong></p>"
-
-        path = "/lesfilms/film[realisateur == " + realSelected + "]/titre";
-        while (result){
-            txt = result.childNodes[0].nodeValue + "\n";
-            result = nodes.iterateNext();
-            container.innerHTML = container.innerHTML + txt + "<br/>"
-        }
     }
+    document.getElementById("xPathFilms").innerHTML = txt;
+    //On veut récupérer les films dont la date est supérieur à 1900 les conditions s'exprime ex: /lesfilms/film[date > 1900]/titre
+    txt = "";
+    path = "/lesfilms/film[date > 1970]/titre";
+    nodes = xml.evaluate(path, xml, null, XPathResult.ANY_TYPE, null);
+    result = nodes.iterateNext();
+    while (result){
+        txt += result.childNodes[0].nodeValue + "\n";
+        result = nodes.iterateNext();
+    }
+    document.getElementById("xPathFilms1970").innerHTML = txt;
+}        
+
+function OnSelectDisplay(selectObject) 
+{
+    //On récupère le container qui va accueillir les donnée à afficher selon le réal selctionner.
+    var container = document.getElementById('displayRealFilm');
+    var realSelected = selectObject.value;
+    var txt ="";
+    container.innerHTML = "<p><strong><em>Voci la liste des films du réalisateur sélectionner :</em></strong></p>"
+
+    path = "/lesfilms/film[realisateur == " + realSelected + "]/titre";
+    while (result){
+        txt = result.childNodes[0].nodeValue + "\n";
+        result = nodes.iterateNext();
+        container.innerHTML = container.innerHTML + txt + "<br/>"
+    }
+}
 
 </script>
 </body>
